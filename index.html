@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNDERCOVER - Game Detective</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff2d75;
+            --secondary: #794afa;
+            --accent: #00f2fe;
+            --dark: #0f0f23;
+            --darker: #090914;
+            --light: #ffffff;
+            --success: #00ff9d;
+            --warning: #ffcc00;
+            --danger: #ff2d75;
+            --civilian: #00f2fe;
+            --undercover: #ff2d75;
+            --mrwhite: #ffcc00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--light);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--secondary), transparent);
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 3s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 6s;
+        }
+
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 10%;
+            animation-delay: 9s;
+        }
+
+        .bg-circle:nth-child(5) {
+            width: 350px;
+            height: 350px;
+            top: 20%;
+            left: 30%;
+            animation-delay: 12s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -50px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        .container {
+            background: rgba(15, 15, 35, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 95%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid rgba(121, 74, 250, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 45, 117, 0.5);
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            margin: 20px 0;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            margin: 15px 0;
+            color: var(--light);
+        }
+
+        p {
+            margin: 15px 0;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            padding: 18px 35px;
+            margin: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 220px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #5a2fdc);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #00c4cc);
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            width: 180px;
+            font-size: 1rem;
+            padding: 15px 25px;
+        }
+
+        .btn-vote {
+            background: linear-gradient(135deg, var(--primary), #e0005a);
+            width: 200px;
+            margin: 8px;
+            padding: 15px 20px;
+        }
+
+        .btn-role {
+            width: 100%;
+            margin: 5px 0;
+            padding: 12px 20px;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        .btn-civilian {
+            background: linear-gradient(135deg, var(--civilian), #00a0a8);
+        }
+
+        .btn-undercover {
+            background: linear-gradient(135deg, var(--undercover), #cc0052);
+        }
+
+        .btn-mrwhite {
+            background: linear-gradient(135deg, var(--mrwhite), #cc9900);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(121, 74, 250, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border-color: rgba(121, 74, 250, 0.4);
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .current-player {
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+            transform: scale(1.02);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.5), rgba(118, 75, 162, 0.5));
+        }
+
+        .eliminated {
+            opacity: 0.6;
+            background: linear-gradient(135deg, rgba(128, 128, 128, 0.3), rgba(80, 80, 80, 0.3));
+            border-left: 4px solid #888;
+        }
+
+        .role {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .role-civilian {
+            background: rgba(0, 242, 254, 0.2);
+            color: var(--civilian);
+            border: 1px solid var(--civilian);
+        }
+
+        .role-undercover {
+            background: rgba(255, 45, 117, 0.2);
+            color: var(--undercover);
+            border: 1px solid var(--undercover);
+        }
+
+        .role-mrwhite {
+            background: rgba(255, 204, 0, 0.2);
+            color: var(--mrwhite);
+            border: 1px solid var(--mrwhite);
+        }
+
+        .word {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--light);
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .instructions {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .instructions h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .instructions h3 i {
+            margin-right: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .vote-section {
+            margin: 25px 0;
+        }
+
+        .guess-input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 2px solid var(--secondary);
+            background: rgba(15, 15, 35, 0.8);
+            color: var(--light);
+            font-size: 1.1rem;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .guess-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .game-log {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 250px;
+            overflow-y: auto;
+            text-align: left;
+            border: 1px solid rgba(121, 74, 250, 0.2);
+        }
+
+        .log-entry {
+            margin: 10px 0;
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .log-entry i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .player-number {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .player-status {
+            font-size: 0.9rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: rgba(0, 242, 254, 0.2);
+            color: var(--civilian);
+        }
+
+        .status-eliminated {
+            background: rgba(255, 45, 117, 0.2);
+            color: var(--undercover);
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .badge-civilian {
+            background: var(--civilian);
+            color: var(--dark);
+        }
+
+        .badge-undercover {
+            background: var(--undercover);
+            color: white;
+        }
+
+        .badge-mrwhite {
+            background: var(--mrwhite);
+            color: var(--dark);
+        }
+
+        .result-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .winner-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 15px;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .winner-civilians {
+            color: var(--civilian);
+            background: rgba(0, 242, 254, 0.1);
+            border: 2px solid var(--civilian);
+        }
+
+        .winner-undercover {
+            color: var(--undercover);
+            background: rgba(255, 45, 117, 0.1);
+            border: 2px solid var(--undercover);
+        }
+
+        .winner-mrwhite {
+            color: var(--mrwhite);
+            background: rgba(255, 204, 0, 0.1);
+            border: 2px solid var(--mrwhite);
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .player-result-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .player-result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .avatar-civilian {
+            background: linear-gradient(135deg, var(--civilian), #00a0a8);
+        }
+
+        .avatar-undercover {
+            background: linear-gradient(135deg, var(--undercover), #cc0052);
+        }
+
+        .avatar-mrwhite {
+            background: linear-gradient(135deg, var(--mrwhite), #cc9900);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: confetti-fall 5s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(0, 242, 254, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 242, 254, 0);
+            }
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 10px 0;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .topic-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .topic-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px;
+            width: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .topic-card.active {
+            border-color: var(--primary);
+            background: rgba(255, 45, 117, 0.1);
+        }
+
+        .topic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .player-count-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .count-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px 15px;
+            margin: 10px;
+            width: 140px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .count-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .count-card.active {
+            border-color: var(--primary);
+            background: rgba(255, 45, 117, 0.1);
+        }
+
+        .count-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* Login Form Styles */
+        .login-container {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 95%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            border: 1px solid rgba(121, 74, 250, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+            z-index: 2;
+        }
+
+        .login-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 45, 117, 0.5);
+        }
+
+        .login-subtitle {
+            color: var(--accent);
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--secondary);
+            background: rgba(15, 15, 35, 0.8);
+            color: var(--light);
+            font-size: 1.1rem;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .error-message {
+            color: var(--danger);
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .login-footer {
+            margin-top: 25px;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .login-footer a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                width: 90%;
+                padding: 15px 25px;
+            }
+
+            .players-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .login-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Halaman Login -->
+    <div id="login-page">
+        <div class="login-container">
+            <h1 class="login-title"><i class="fas fa-user-secret"></i> UNDERCOVER</h1>
+            <p class="login-subtitle">Masuk untuk memulai permainan</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Masukkan username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Masukkan password" required>
+                </div>
+                
+                <div id="login-error" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> Username atau password salah!
+                </div>
+                
+                <button type="submit" class="btn login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Gunakan username: <strong>AUDEDEVIL</strong> dan password: <strong>10</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Game (Awalnya Tersembunyi) -->
+    <div id="game-page" class="hidden">
+        <div class="container">
+            <!-- Halaman Utama -->
+            <div id="home-page">
+                <h1><i class="fas fa-user-secret"></i> UNDERCOVER</h1>
+                <p class="subtitle">Game Detective - Temukan Penyamaran!</p>
+                
+                <div class="card">
+                    <h2>Pilih Topik Game</h2>
+                    <div class="topic-selector">
+                        <div class="topic-card active" onclick="selectTopic('sepakbola')">
+                            <div class="topic-icon">
+                                <i class="fas fa-futbol"></i>
+                            </div>
+                            <h3>Sepakbola</h3>
+                            <p>100 Nama Pemain Sepakbola</p>
+                        </div>
+                        <div class="topic-card" onclick="selectTopic('hewan')">
+                            <div class="topic-icon">
+                                <i class="fas fa-paw"></i>
+                            </div>
+                            <h3>Hewan</h3>
+                            <p>100 Nama Hewan</p>
+                        </div>
+                        <div class="topic-card" onclick="selectTopic('mobile-legends')">
+                            <div class="topic-icon">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <h3>Mobile Legends</h3>
+                            <p>100 Nama Hero ML</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> Cara Bermain</h3>
+                    <ul>
+                        <li>Semua pemain mendapatkan kata yang hampir sama, kecuali Undercover yang mendapatkan kata berbeda</li>
+                        <li>Mr. White tidak tahu kata apapun dan harus menebak kata yang dimiliki Civilian di akhir game</li>
+                        <li>Pemain bergiliran mendeskripsikan kata mereka tanpa menyebut kata tersebut secara langsung</li>
+                        <li>Setelah semua pemain memberikan deskripsi, lakukan voting untuk menebak siapa Undercover</li>
+                        <li>Jika Civilian berhasil menemukan Undercover, Civilian menang. Jika Undercover bertahan hingga tersisa 2 pemain, Undercover menang</li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-accent" onclick="startGame()">
+                    <i class="fas fa-play"></i> Mulai Game
+                </button>
+                
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+
+            <!-- Halaman Pilih Jumlah Pemain -->
+            <div id="player-count-page" class="hidden">
+                <h2><i class="fas fa-users"></i> Pilih Jumlah Pemain</h2>
+                <p>Topik: <span id="selected-topic" class="role-civilian">Sepakbola</span></p>
+                
+                <div class="player-count-selector">
+                    <div class="count-card" onclick="selectPlayerCount(3)">
+                        <div class="count-number">3</div>
+                        <h3>3 Pemain</h3>
+                        <p>1 Undercover</p>
+                    </div>
+                    <div class="count-card" onclick="selectPlayerCount(4)">
+                        <div class="count-number">4</div>
+                        <h3>4 Pemain</h3>
+                        <p>1 Undercover + 1 Mr. White</p>
+                    </div>
+                    <div class="count-card" onclick="selectPlayerCount(5)">
+                        <div class="count-number">5</div>
+                        <h3>5 Pemain</h3>
+                        <p>1 Undercover + 1 Mr. White</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-back" onclick="goBack('player-count-page', 'home-page')">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+            </div>
+
+            <!-- Halaman Giliran Pemain -->
+            <div id="player-turn-page" class="hidden">
+                <h2><i class="fas fa-user-clock"></i> Giliran Pemain</h2>
+                <p>Topik: <span id="turn-topic" class="role-civilian">Sepakbola</span> | 
+                   Jumlah Pemain: <span id="turn-player-count" class="role-civilian"></span></p>
+                
+                <div class="timer" id="turn-timer">Waktu: 30 detik</div>
+                
+                <div id="player-turn-container"></div>
+                
+                <button class="btn btn-accent pulse" onclick="nextPlayer()" id="next-player-btn">
+                    <i class="fas fa-forward"></i> Lanjut ke Pemain Berikutnya
+                </button>
+                
+                <button class="btn btn-back" onclick="goBack('player-turn-page', 'player-count-page')">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+            </div>
+
+            <!-- Halaman Voting -->
+            <div id="voting-page" class="hidden">
+                <h2><i class="fas fa-vote-yea"></i> Voting</h2>
+                <p>Siapa yang menurut Anda adalah Undercover?</p>
+                
+                <div class="vote-section" id="voting-container"></div>
+                
+                <div class="game-log" id="voting-log">
+                    <h3><i class="fas fa-clipboard-list"></i> Log Voting</h3>
+                    <div id="voting-log-entries"></div>
+                </div>
+                
+                <button class="btn btn-back" onclick="goBack('voting-page', 'player-turn-page')">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+            </div>
+
+            <!-- Halaman Hasil Voting -->
+            <div id="voting-result-page" class="hidden">
+                <h2><i class="fas fa-poll"></i> Hasil Voting</h2>
+                <div id="voting-result-container"></div>
+                <button class="btn btn-accent" onclick="continueGame()" id="continue-btn">
+                    <i class="fas fa-play"></i> Lanjutkan
+                </button>
+            </div>
+
+            <!-- Halaman Tebak Mr. White -->
+            <div id="mr-white-guess-page" class="hidden">
+                <h2><i class="fas fa-question-circle"></i> Tebak Kata</h2>
+                <p>Mr. White, tebak kata yang dimiliki Civilian:</p>
+                
+                <input type="text" class="guess-input" id="mr-white-guess" placeholder="Masukkan tebakan Anda">
+                
+                <button class="btn btn-accent" onclick="submitMrWhiteGuess()">
+                    <i class="fas fa-paper-plane"></i> Submit Tebakan
+                </button>
+            </div>
+
+            <!-- Halaman Game Selesai -->
+            <div id="game-over-page" class="hidden">
+                <h2><i class="fas fa-trophy"></i> Game Selesai</h2>
+                <div id="game-result-container"></div>
+                <button class="btn btn-accent" onclick="restartGame()">
+                    <i class="fas fa-redo"></i> Main Lagi
+                </button>
+                <button class="btn btn-secondary" onclick="goBack('game-over-page', 'home-page')">
+                    <i class="fas fa-home"></i> Kembali ke Menu Utama
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data untuk game - 100 nama pemain sepakbola
+        const gameData = {
+            sepakbola: {
+                name: "Sepakbola",
+                words: [
+                    { civilian: "Lionel Messi", undercover: "Cristiano Ronaldo" },
+                    { civilian: "Xavi Hernandez", undercover: "Andres Iniesta" },
+                    { civilian: "Kylian Mbappe", undercover: "Erling Haaland" },
+                    { civilian: "Kevin De Bruyne", undercover: "Luka Modric" },
+                    { civilian: "Virgil van Dijk", undercover: "Sergio Ramos" },
+                    { civilian: "Robert Lewandowski", undercover: "Karim Benzema" },
+                    { civilian: "Mohamed Salah", undercover: "Sadio Mane" },
+                    { civilian: "Neymar Jr", undercover: "Kylian Mbappe" },
+                    { civilian: "Harry Kane", undercover: "Romelu Lukaku" },
+                    { civilian: "Manuel Neuer", undercover: "Thibaut Courtois" },
+                    { civilian: "Toni Kroos", undercover: "Marco Verratti" },
+                    { civilian: "Paul Pogba", undercover: "N'Golo Kante" },
+                    { civilian: "Bruno Fernandes", undercover: "Bernardo Silva" },
+                    { civilian: "Raheem Sterling", undercover: "Phil Foden" },
+                    { civilian: "Joshua Kimmich", undercover: "Leon Goretzka" },
+                    { civilian: "Frenkie de Jong", undercover: "Matthijs de Ligt" },
+                    { civilian: "Luis Suarez", undercover: "Edinson Cavani" },
+                    { civilian: "Sergio Aguero", undercover: "Gabriel Jesus" },
+                    { civilian: "Antoine Griezmann", undercover: "Ousmane Dembele" },
+                    { civilian: "Gareth Bale", undercover: "Eden Hazard" },
+                    { civilian: "Zlatan Ibrahimovic", undercover: "Zlatan Ibrahimovic" },
+                    { civilian: "Paulo Dybala", undercover: "Mauro Icardi" },
+                    { civilian: "Marco Reus", undercover: "Thomas Muller" },
+                    { civilian: "Ciro Immobile", undercover: "Lautaro Martinez" },
+                    { civilian: "Dusan Vlahovic", undercover: "Victor Osimhen" },
+                    { civilian: "Jadon Sancho", undercover: "Marcus Rashford" },
+                    { civilian: "Kai Havertz", undercover: "Timo Werner" },
+                    { civilian: "Jack Grealish", undercover: "Mason Mount" },
+                    { civilian: "Declan Rice", undercover: "Kalvin Phillips" },
+                    { civilian: "Ruben Dias", undercover: "Aymeric Laporte" },
+                    { civilian: "Trent Alexander-Arnold", undercover: "Joao Cancelo" },
+                    { civilian: "Alphonso Davies", undercover: "Theo Hernandez" },
+                    { civilian: "Pedri", undercover: "Gavi" },
+                    { civilian: "Jude Bellingham", undercover: "Jamal Musiala" },
+                    { civilian: "Ansu Fati", undercover: "Ferran Torres" },
+                    { civilian: "Rafael Leao", undercover: "Khvicha Kvaratskhelia" },
+                    { civilian: "Christopher Nkunku", undercover: "Moussa Diaby" },
+                    { civilian: "Achraf Hakimi", undercover: "Reece James" },
+                    { civilian: "Mike Maignan", undercover: "Jan Oblak" },
+                    { civilian: "David Alaba", undercover: "Marquinhos" },
+                    { civilian: "Ronald Araujo", undercover: "Jules Kounde" },
+                    { civilian: "Federico Valverde", undercover: "Aurelien Tchouameni" },
+                    { civilian: "Rodri", undercover: "Casemiro" },
+                    { civilian: "Martin Odegaard", undercover: "Emile Smith Rowe" },
+                    { civilian: "Bukayo Saka", undercover: "Gabriel Martinelli" },
+                    { civilian: "Heung-min Son", undercover: "Son Heung-min" },
+                    { civilian: "Riyad Mahrez", undercover: "Raphinha" },
+                    { civilian: "Angel Di Maria", undercover: "Nicolas Pepe" },
+                    { civilian: "Hakim Ziyech", undercover: "Wilfried Zaha" },
+                    { civilian: "Milan Skriniar", undercover: "Kalidou Koulibaly" },
+                    { civilian: "Andrew Robertson", undercover: "Luke Shaw" },
+                    { civilian: "Cesar Azpilicueta", undercover: "Kyle Walker" },
+                    { civilian: "Thiago Silva", undercover: "Giorgio Chiellini" },
+                    { civilian: "Mats Hummels", undercover: "Jerome Boateng" },
+                    { civilian: "Gerard Pique", undercover: "Sergio Busquets" },
+                    { civilian: "Jordan Henderson", undercover: "James Milner" },
+                    { civilian: "Ilkay Gundogan", undercover: "Thomas Partey" },
+                    { civilian: "Fabinho", undercover: "Allan" },
+                    { civilian: "Lucas Paqueta", undercover: "Arthur Melo" },
+                    { civilian: "Houssem Aouar", undercover: "Nabil Fekir" },
+                    { civilian: "Sergej Milinkovic-Savic", undercover: "Weston McKennie" },
+                    { civilian: "Nicolo Barella", undercover: "Lorenzo Insigne" },
+                    { civilian: "Federico Chiesa", undercover: "Domenico Berardi" },
+                    { civilian: "Ciro Immobile", undercover: "Andrea Belotti" },
+                    { civilian: "Tammy Abraham", undercover: "Olivier Giroud" },
+                    { civilian: "Patrik Schick", undercover: "Wout Weghorst" },
+                    { civilian: "Alexander Isak", undercover: "Alexander Sorloth" },
+                    { civilian: "Mikel Oyarzabal", undercover: "Dani Olmo" },
+                    { civilian: "Yannick Carrasco", undercover: "Thorgan Hazard" },
+                    { civilian: "Kingsley Coman", undercover: "Serge Gnabry" },
+                    { civilian: "Leroy Sane", undercover: "Julian Brandt" },
+                    { civilian: "Leon Bailey", undercover: "Ademola Lookman" },
+                    { civilian: "Allan Saint-Maximin", undercover: "Randal Kolo Muani" },
+                    { civilian: "Moussa Dembele", undercover: "Wissam Ben Yedder" },
+                    { civilian: "Jonathan David", undercover: "Cyle Larin" },
+                    { civilian: "Dominik Szoboszlai", undercover: "Roland Sallai" },
+                    { civilian: "Nicolo Zaniolo", undercover: "Giacomo Raspadori" },
+                    { civilian: "Sandro Tonali", undercover: "Manuel Locatelli" },
+                    { civilian: "Gianluigi Donnarumma", undercover: "Guglielmo Vicario" },
+                    { civilian: "Ederson", undercover: "Alisson Becker" },
+                    { civilian: "Keylor Navas", undercover: "David de Gea" },
+                    { civilian: "Wojciech Szczesny", undercover: "Lukasz Fabianski" },
+                    { civilian: "Yassine Bounou", undercover: "Munir Mohamedi" },
+                    { civilian: "Emiliano Martinez", undercover: "Franco Armani" },
+                    { civilian: "Samir Handanovic", undercover: "Ivan Provedel" },
+                    { civilian: "Peter Gulacsi", undercover: "Denes Dibusz" },
+                    { civilian: "Kepa Arrizabalaga", undercover: "David Raya" },
+                    { civilian: "Aaron Ramsdale", undercover: "Jordan Pickford" },
+                    { civilian: "Nick Pope", undercover: "Dean Henderson" },
+                    { civilian: "Bernd Leno", undercover: "Marc-Andre ter Stegen" },
+                    { civilian: "Yann Sommer", undercover: "Gregor Kobel" },
+                    { civilian: "Koen Casteels", undercover: "Thibaut Courtois" },
+                    { civilian: "Rui Patricio", undercover: "Anthony Lopes" },
+                    { civilian: "Lucas Hernandez", undercover: "Benjamin Pavard" },
+                    { civilian: "Presnel Kimpembe", undercover: "Dayot Upamecano" },
+                    { civilian: "Ibrahima Konate", undercover: "Wesley Fofana" },
+                    { civilian: "Pau Torres", undercover: "Eric Garcia" },
+                    { civilian: "Diego Carlos", undercover: "Gabriel Magalhaes" }
+                ]
+            },
+            hewan: {
+                name: "Hewan",
+                words: [
+                    { civilian: "Singa", undercover: "Harimau" },
+                    { civilian: "Gajah", undercover: "Badak" },
+                    { civilian: "Jerapah", undercover: "Zebra" },
+                    { civilian: "Kucing", undercover: "Anjing" },
+                    { civilian: "Kelinci", undercover: "Tupai" }
+                ]
+            },
+            "mobile-legends": {
+                name: "Mobile Legends",
+                words: [
+                    { civilian: "Alucard", undercover: "Zilong" },
+                    { civilian: "Miya", undercover: "Layla" },
+                    { civilian: "Tigreal", undercover: "Gatotkaca" },
+                    { civilian: "Eudora", undercover: "Aurora" },
+                    { civilian: "Fanny", undercover: "Ling" }
+                ]
+            }
+        };
+
+        // Variabel game
+        let currentTopic = "sepakbola";
+        let playerCount = 0;
+        let players = [];
+        let currentPlayerIndex = 0;
+        let eliminatedPlayers = [];
+        let gameWords = [];
+        let undercoverIndex = -1;
+        let mrWhiteIndex = -1;
+        let votes = {};
+        let gameLog = [];
+
+        // Fungsi untuk login
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            if (username === 'AUDEDEVIL' && password === '10') {
+                // Login berhasil
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('game-page').classList.remove('hidden');
+                errorElement.style.display = 'none';
+            } else {
+                // Login gagal
+                errorElement.style.display = 'block';
+            }
+        });
+
+        // Fungsi logout
+        function logout() {
+            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('game-page').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Fungsi untuk memilih topik
+        function selectTopic(topic) {
+            currentTopic = topic;
+            
+            // Update tampilan topik yang dipilih
+            document.querySelectorAll('.topic-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+        }
+
+        // Fungsi untuk memulai game
+        function startGame() {
+            // Pindah ke halaman pilih jumlah pemain
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('player-count-page').classList.remove('hidden');
+            
+            // Update tampilan topik yang dipilih
+            document.getElementById('selected-topic').textContent = gameData[currentTopic].name;
+        }
+
+        // Fungsi untuk memilih jumlah pemain
+        function selectPlayerCount(count) {
+            playerCount = count;
+            
+            // Update tampilan jumlah pemain yang dipilih
+            document.querySelectorAll('.count-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+            
+            // Setup game
+            setupGame();
+            
+            // Pindah ke halaman giliran pemain
+            document.getElementById('player-count-page').classList.add('hidden');
+            document.getElementById('player-turn-page').classList.remove('hidden');
+            
+            // Update tampilan
+            document.getElementById('turn-topic').textContent = gameData[currentTopic].name;
+            document.getElementById('turn-player-count').textContent = playerCount;
+            
+            // Tampilkan pemain pertama
+            showCurrentPlayer();
+        }
+
+        // Fungsi untuk setup game
+        function setupGame() {
+            // Reset variabel game
+            players = [];
+            currentPlayerIndex = 0;
+            eliminatedPlayers = [];
+            votes = {};
+            gameLog = [];
+            
+            // Pilih kata secara acak
+            const randomIndex = Math.floor(Math.random() * gameData[currentTopic].words.length);
+            gameWords = gameData[currentTopic].words[randomIndex];
+            
+            // Tentukan peran pemain
+            undercoverIndex = Math.floor(Math.random() * playerCount);
+            
+            // Untuk 4+ pemain, tambahkan Mr. White
+            if (playerCount >= 4) {
+                do {
+                    mrWhiteIndex = Math.floor(Math.random() * playerCount);
+                } while (mrWhiteIndex === undercoverIndex);
+            }
+            
+            // Buat daftar pemain
+            for (let i = 0; i < playerCount; i++) {
+                let role = "civilian";
+                let word = gameWords.civilian;
+                
+                if (i === undercoverIndex) {
+                    role = "undercover";
+                    word = gameWords.undercover;
+                } else if (i === mrWhiteIndex) {
+                    role = "mrwhite";
+                    word = "???";
+                }
+                
+                players.push({
+                    id: i,
+                    name: `Pemain ${i + 1}`,
+                    role: role,
+                    word: word,
+                    eliminated: false
+                });
+            }
+            
+            // Tambahkan log
+            addGameLog("Game dimulai dengan topik: " + gameData[currentTopic].name);
+            addGameLog("Jumlah pemain: " + playerCount);
+        }
+
+        // Fungsi untuk menampilkan giliran pemain saat ini
+        function showCurrentPlayer() {
+            const container = document.getElementById('player-turn-container');
+            const player = players[currentPlayerIndex];
+            
+            container.innerHTML = `
+                <div class="card ${player.eliminated ? 'eliminated' : ''}">
+                    <h3>${player.name}</h3>
+                    <p>Giliran Anda untuk mendeskripsikan kata:</p>
+                    <div class="word">${player.word}</div>
+                    <div class="role ${'role-' + player.role}">${getRoleName(player.role)}</div>
+                </div>
+            `;
+            
+            // Reset timer
+            startTimer(30);
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer(seconds) {
+            const timerElement = document.getElementById('turn-timer');
+            let timeLeft = seconds;
+            
+            const timer = setInterval(() => {
+                timerElement.textContent = `Waktu: ${timeLeft} detik`;
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    timerElement.textContent = "Waktu habis!";
+                    document.getElementById('next-player-btn').classList.add('pulse');
+                }
+            }, 1000);
+        }
+
+        // Fungsi untuk pindah ke pemain berikutnya
+        function nextPlayer() {
+            // Cari pemain berikutnya yang belum tereliminasi
+            do {
+                currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+            } while (players[currentPlayerIndex].eliminated);
+            
+            // Jika kembali ke pemain pertama, pindah ke fase voting
+            if (currentPlayerIndex === 0) {
+                document.getElementById('player-turn-page').classList.add('hidden');
+                document.getElementById('voting-page').classList.remove('hidden');
+                setupVoting();
+                return;
+            }
+            
+            // Tampilkan pemain berikutnya
+            showCurrentPlayer();
+            document.getElementById('next-player-btn').classList.remove('pulse');
+        }
+
+        // Fungsi untuk setup voting
+        function setupVoting() {
+            const container = document.getElementById('voting-container');
+            container.innerHTML = '';
+            
+            // Reset votes
+            votes = {};
+            
+            // Buat tombol voting untuk setiap pemain yang masih aktif
+            players.forEach(player => {
+                if (!player.eliminated) {
+                    const button = document.createElement('button');
+                    button.className = 'btn btn-vote';
+                    button.innerHTML = `<i class="fas fa-user"></i> ${player.name}`;
+                    button.onclick = () => voteForPlayer(player.id);
+                    container.appendChild(button);
+                }
+            });
+            
+            // Update log voting
+            updateVotingLog();
+            
+            addGameLog("Fase voting dimulai");
+        }
+
+        // Fungsi untuk vote pemain
+        function voteForPlayer(playerId) {
+            // Simpan vote (dalam implementasi nyata, ini akan dikumpulkan dari semua pemain)
+            votes = { [playerId]: 1 };
+            
+            // Tampilkan hasil voting
+            showVotingResult();
+        }
+
+        // Fungsi untuk menampilkan hasil voting
+        function showVotingResult() {
+            document.getElementById('voting-page').classList.add('hidden');
+            document.getElementById('voting-result-page').classList.remove('hidden');
+            
+            const container = document.getElementById('voting-result-container');
+            const votedPlayerId = Object.keys(votes)[0];
+            const votedPlayer = players[votedPlayerId];
+            
+            container.innerHTML = `
+                <div class="card">
+                    <h3>Hasil Voting</h3>
+                    <p>Pemain yang terpilih: <strong>${votedPlayer.name}</strong></p>
+                    <div class="role ${'role-' + votedPlayer.role}">${getRoleName(votedPlayer.role)}</div>
+                    <p>${votedPlayer.name} telah dieliminasi!</p>
+                </div>
+            `;
+            
+            // Eliminasi pemain
+            players[votedPlayerId].eliminated = true;
+            eliminatedPlayers.push(votedPlayerId);
+            
+            // Tambahkan log
+            addGameLog(`${votedPlayer.name} dieliminasi. Peran: ${getRoleName(votedPlayer.role)}`);
+            
+            // Periksa apakah game sudah selesai
+            if (checkGameOver()) {
+                document.getElementById('continue-btn').style.display = 'none';
+                setTimeout(showGameOver, 2000);
+            } else if (votedPlayer.role === 'mrwhite') {
+                // Jika Mr. White tereliminasi, lanjutkan game
+                document.getElementById('continue-btn').style.display = 'block';
+            } else {
+                // Jika bukan Mr. White, lanjutkan game
+                document.getElementById('continue-btn').style.display = 'block';
+            }
+        }
+
+        // Fungsi untuk melanjutkan game setelah voting
+        function continueGame() {
+            document.getElementById('voting-result-page').classList.add('hidden');
+            
+            // Jika Mr. White masih aktif dan hanya tersisa 2 pemain, Mr. White harus menebak kata
+            const activePlayers = players.filter(p => !p.eliminated);
+            if (activePlayers.length === 2 && mrWhiteIndex !== -1 && !players[mrWhiteIndex].eliminated) {
+                document.getElementById('mr-white-guess-page').classList.remove('hidden');
+            } else {
+                // Lanjutkan ke giliran berikutnya
+                document.getElementById('player-turn-page').classList.remove('hidden');
+                showCurrentPlayer();
+            }
+        }
+
+        // Fungsi untuk submit tebakan Mr. White
+        function submitMrWhiteGuess() {
+            const guess = document.getElementById('mr-white-guess').value.trim();
+            
+            if (guess === '') {
+                alert('Masukkan tebakan Anda!');
+                return;
+            }
+            
+            // Periksa apakah tebakan benar
+            const isCorrect = guess.toLowerCase() === gameWords.civilian.toLowerCase();
+            
+            // Tampilkan hasil
+            showGameOver(isCorrect ? 'mrwhite' : 'civilian');
+        }
+
+        // Fungsi untuk memeriksa apakah game sudah selesai
+        function checkGameOver() {
+            const activePlayers = players.filter(p => !p.eliminated);
+            const undercoverEliminated = players[undercoverIndex].eliminated;
+            
+            // Jika Undercover tereliminasi, Civilian menang
+            if (undercoverEliminated) {
+                showGameOver('civilian');
+                return true;
+            }
+            
+            // Jika hanya tersisa 2 pemain dan Undercover masih aktif, Undercover menang
+            if (activePlayers.length === 2) {
+                // Jika Mr. White masih aktif, dia harus menebak kata
+                if (mrWhiteIndex !== -1 && !players[mrWhiteIndex].eliminated) {
+                    return false;
+                }
+                
+                showGameOver('undercover');
+                return true;
+            }
+            
+            return false;
+        }
+
+        // Fungsi untuk menampilkan halaman game over
+        function showGameOver(winner = null) {
+            // Jika winner tidak ditentukan, tentukan pemenang
+            if (!winner) {
+                const undercoverEliminated = players[undercoverIndex].eliminated;
+                winner = undercoverEliminated ? 'civilian' : 'undercover';
+            }
+            
+            document.getElementById('voting-result-page').classList.add('hidden');
+            document.getElementById('mr-white-guess-page').classList.add('hidden');
+            document.getElementById('game-over-page').classList.remove('hidden');
+            
+            const container = document.getElementById('game-result-container');
+            
+            // Tampilkan pemenang
+            let winnerText = '';
+            let winnerClass = '';
+            
+            if (winner === 'civilian') {
+                winnerText = 'CIVILIAN MENANG!';
+                winnerClass = 'winner-civilians';
+            } else if (winner === 'undercover') {
+                winnerText = 'UNDERCOVER MENANG!';
+                winnerClass = 'winner-undercover';
+            } else if (winner === 'mrwhite') {
+                winnerText = 'MR. WHITE MENANG!';
+                winnerClass = 'winner-mrwhite';
+            }
+            
+            container.innerHTML = `
+                <div class="result-container">
+                    <div class="winner-text ${winnerClass}">${winnerText}</div>
+                    
+                    <div class="card">
+                        <h3>Kata dalam Game</h3>
+                        <p>Civilian: <strong>${gameWords.civilian}</strong></p>
+                        <p>Undercover: <strong>${gameWords.undercover}</strong></p>
+                    </div>
+                    
+                    <h3>Hasil Akhir</h3>
+                    <div class="players-grid">
+                        ${players.map(player => `
+                            <div class="player-result-card ${player.eliminated ? 'eliminated' : ''}">
+                                <div class="player-avatar ${'avatar-' + player.role}">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h4>${player.name}</h4>
+                                <p>${getRoleName(player.role)}</p>
+                                <span class="role-badge ${'badge-' + player.role}">${player.role.toUpperCase()}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Tambahkan efek confetti
+            createConfetti();
+            
+            // Tambahkan log
+            addGameLog(`Game selesai. Pemenang: ${winnerText}`);
+        }
+
+        // Fungsi untuk restart game
+        function restartGame() {
+            document.getElementById('game-over-page').classList.add('hidden');
+            document.getElementById('home-page').classList.remove('hidden');
+        }
+
+        // Fungsi untuk kembali ke halaman sebelumnya
+        function goBack(fromPage, toPage) {
+            document.getElementById(fromPage).classList.add('hidden');
+            document.getElementById(toPage).classList.remove('hidden');
+        }
+
+        // Fungsi untuk mendapatkan nama peran
+        function getRoleName(role) {
+            switch(role) {
+                case 'civilian': return 'Civilian';
+                case 'undercover': return 'Undercover';
+                case 'mrwhite': return 'Mr. White';
+                default: return 'Unknown';
+            }
+        }
+
+        // Fungsi untuk menambahkan log game
+        function addGameLog(message) {
+            gameLog.push(message);
+            updateVotingLog();
+        }
+
+        // Fungsi untuk update log voting
+        function updateVotingLog() {
+            const logContainer = document.getElementById('voting-log-entries');
+            logContainer.innerHTML = '';
+            
+            gameLog.forEach(log => {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `<i class="fas fa-comment"></i> ${log}`;
+                logContainer.appendChild(logEntry);
+            });
+            
+            // Scroll ke bawah
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // Fungsi untuk membuat efek confetti
+        function createConfetti() {
+            const colors = ['#ff2d75', '#794afa', '#00f2fe', '#ffcc00', '#00ff9d'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(confetti);
+                
+                // Hapus confetti setelah animasi selesai
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
